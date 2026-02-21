@@ -1,40 +1,35 @@
 import 'dart:io';
 
-//Une fonction qui recoit un texte ex: IX, et retourne un entier ex: 9
-int convertirRomainEnArabe(String romain) {
-  romain = romain.toUpperCase();
+void main() {
+  print("CONVERTISSEUR ARABE | ROMAIN");
 
-  // Map est un dictionnaire (cle : lettre romaine et valeur est Nombre Arabe)
-  Map<String, int> correspondance = {
-    'I': 1,
-    'V': 5,
-    'X': 10,
-    'L': 50,
-    'C': 100,
-    'D': 500,
-    'M': 1000,
-  };
-  //Variable totale qui ici, accumule le resulat
-  int total = 0;
+  // Conversion des nombres arabe vers le nombre romain
+  print("\nEntrez un nombre arabe (1 à 3999) : ");
+  String? saisie = stdin.readLineSync();
 
-  // La boucle for parcourt chaque lettre du mot romain
-  for (int i = 0; i < romain.length; i++) {
-    int valeur = correspondance[romain[i]]!;
+  int? nombreArabe = int.tryParse(saisie ?? "");
 
-    // On verifie si Est-ce qu’il y a une lettre après ?, ou est-ce que la valeur actuelle est plus petite que la suivante ? pour maintenant appliquer les regles de la coversions de romain en arabe (Soustraction ou addition)
-    if (i + 1 < romain.length && valeur < correspondance[romain[i + 1]]!) {
-      total -= valeur;
-    } else {
-      total += valeur;
-    }
+  if (nombreArabe == null) {
+    print("Erreur : veuillez entrer un nombre valide !");
+  } else if (nombreArabe <= 0 || nombreArabe > 3999) {
+    print("Erreur : le nombre doit être compris entre 1 et 3999.");
+  } else {
+    print("En romain : ${arabeRomain(nombreArabe)}");
   }
 
-  return total;
+  // Conversion des nombres romains vers Arabe {Les entrees de l'utilisateur}
+  print("\nEntrez un nombre romain : ");
+  String? nombreRomain = stdin.readLineSync();
+
+  if (nombreRomain == null || nombreRomain.isEmpty) {
+    print("Erreur : entrée invalide !");
+  } else {
+    print("En arabe : ${romainArabe(nombreRomain)}");
+  }
 }
 
-// Une autre fonction qui reçoit un nombre et retournr un texte
-String convertirArabeEnRomain(int nombre) {
-  //On commence par les grandes valeurs
+// Fonction qui convertit un nombre arabe en nombre romain
+String arabeRomain(int nombre) {
   Map<int, String> correspondance = {
     1000: 'M',
     900: 'CM',
@@ -54,7 +49,6 @@ String convertirArabeEnRomain(int nombre) {
   String resultat = '';
 
   correspondance.forEach((valeur, symbole) {
-    //Tant que le nombre est plus grand que la valeur : on ajoute le symbole ou on soustrait la valeur
     while (nombre >= valeur) {
       resultat += symbole;
       nombre -= valeur;
@@ -64,13 +58,36 @@ String convertirArabeEnRomain(int nombre) {
   return resultat;
 }
 
-void main() {
-  // pour lire maintenant ce que l'utlisateur ecrit
-  print("Entrez un nombre romain (ex: IX) : ");
-  String romain = stdin.readLineSync()!;
-  print("En arabe : ${convertirRomainEnArabe(romain)}");
+// Fonction qui convertit un nombre romain en nombre arabe
+int romainArabe(String romain) {
+  romain = romain.toUpperCase();
 
-  print("\nEntrez un nombre arabe (ex: 9) : ");
-  int nombre = int.parse(stdin.readLineSync()!);
-  print("En romain : ${convertirArabeEnRomain(nombre)}");
+  Map<String, int> correspondance = {
+    'I': 1,
+    'V': 5,
+    'X': 10,
+    'L': 50,
+    'C': 100,
+    'D': 500,
+    'M': 1000,
+  };
+
+  int total = 0;
+
+  for (int i = 0; i < romain.length; i++) {
+    if (!correspondance.containsKey(romain[i])) {
+      print("[Erreur]: Le nombre maximum a convertir est 3999");
+      return 0;
+    }
+
+    int valeur = correspondance[romain[i]]!;
+
+    if (i + 1 < romain.length && valeur < correspondance[romain[i + 1]]!) {
+      total -= valeur;
+    } else {
+      total += valeur;
+    }
+  }
+
+  return total;
 }
